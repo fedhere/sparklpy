@@ -30,11 +30,11 @@ or
 
 and call, for example,  as  
 
-```import pylab as pl
+```
 
 fig = sparkleme.sparkleme(data)
 
-fig.show()
+fig.show()```
 
 ```
 
