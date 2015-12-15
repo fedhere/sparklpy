@@ -28,7 +28,14 @@ or
 
 `import sparkleme `
 
-and call as  
+and call, for example,  as  
 
-`fig = sparkleme.sparkleme(data)`
+```import pylab as pl
+
+fig = sparkleme.sparkleme(data)
+
+fig.show()
+
+```
+
 
