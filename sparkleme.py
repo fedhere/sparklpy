@@ -1,13 +1,7 @@
 from __future__ import print_function
 import numpy as np
-from scipy import stats
 import pandas as pd
 import matplotlib.pyplot as pl
-import statsmodels.api as sm
-
-import os
-import json
-
 
 #color blindness safe colors
 kelly_colors_hex = [
@@ -48,7 +42,7 @@ newparams = {
 }
 
 
-def sparklme(data, labels = None, xrange = None, rangecol = None, colors = None, figsize = None, axis = None, ncols = None, alpha=0.3, fontsize=15, minmaxformat = '%.1f', xrangeformat = '%.1f', labeloffset = 0, minmaxoffset = 0):
+def sparklme(data, labels = None, datarange = None, rangecol = None, colors = None, figsize = None, axis = None, ncols = None, alpha=0.3, fontsize=15, minmaxformat = '%.1f', xrangeformat = '%.1f', labeloffset = 0, minmaxoffset = 0):
 
     #setting up plotting parameters
     #number of columns in the plotting grid
@@ -71,14 +65,14 @@ def sparklme(data, labels = None, xrange = None, rangecol = None, colors = None,
         N = len(data.columns)
 	if not labels:
             labels = data.columns
-        if xrange :
-            if (not isinstance(xrange, 
+        if datarange :
+            if (not isinstance(datarange, 
                                (list, tuple, np.ndarray)) 
-                or not np.array(xrange).shape == (2,)):
-                print ("xrange incorrect")
+                or not np.array(datarange).shape == (2,)):
+                print ("datarange incorrect")
                 y0, y1 = '', ''
             else:
-                y0, y1 = xrange
+                y0, y1 = datarange
             
         elif rangecol:
             N -= 1
@@ -105,13 +99,14 @@ def sparklme(data, labels = None, xrange = None, rangecol = None, colors = None,
 
         if not labels :
             labels= [''] * N
-        if not xrange or not isinstance(xrange, (list, tuple, np.ndarray)):
+        if not datarange or not isinstance(datarange, 
+                                           (list, tuple, np.ndarray)):
             y0, y1 = 0, N
         elif not len(labels) == N:
             print ("length of lables array is incorrect")
             labels= [''] * N
         else:
-            y0, y1 = xrange
+            y0, y1 = datarange
     else:
         print ("data type not understood")
         return -1
@@ -126,7 +121,7 @@ def sparklme(data, labels = None, xrange = None, rangecol = None, colors = None,
     if figsize :
         fig = pl.figure(figsize = figsize)
     else: 
-        figsize = (10, nrows * 3)
+        figsize = (10, nrows)
         fig = pl.figure(figsize = figsize)
 
     ax = []
@@ -135,7 +130,7 @@ def sparklme(data, labels = None, xrange = None, rangecol = None, colors = None,
 
         x2 = 0 if i%2 == 0 else 3
         
-        ax.append(pl.subplot2grid((nrows, ncols * 2 + ncols / 2), 
+        ax.append(pl.subplot2grid((nrows, ncols * 2 + ncols ), 
                                   ((i/2), x2), colspan = 2))
         minhere = np.nanmin(data)
         maxhere = np.nanmax(data)
@@ -191,3 +186,6 @@ def sparklme(data, labels = None, xrange = None, rangecol = None, colors = None,
                 transform = ax[1].transAxes, fontsize = fontsize)
     
     pl.rcParams.update(oldparams)
+
+
+    return fig
