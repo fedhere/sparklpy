@@ -10,4 +10,4 @@ It will temporarely overwrite your rc.param, but no panic: it will reset them to
 
 The resulting plot will look something like this:
 
-![alt text]("")
+![alt text]("https://github.com/fedhere/sparklpy/blob/master/sparklines_example.png")
