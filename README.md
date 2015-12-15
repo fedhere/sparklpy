@@ -1,5 +1,8 @@
 # sparklpy
 
+[![DOI](https://zenodo.org/badge/10115/fedhere/sparklpy.svg)](https://zenodo.org/badge/latestdoi/10115/fedhere/sparklpy)
+
+
 ##module to create Tufte-style spark line plots
 
 this is a pure module (a single .py and a single function really) that creates a sparkline plot a-la' Tufte.
