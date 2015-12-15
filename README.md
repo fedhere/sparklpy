@@ -22,9 +22,10 @@ install the package "sparkleme" as
 `python setup.py install `
 
 or 
+
 `import sparkleme `
 
-and call as 
+and call as  
 
-`sparkleme.sparkleme(data)`
+`fig = sparkleme.sparkleme(data)`
 
