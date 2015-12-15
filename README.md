@@ -2,7 +2,7 @@
 
 ##module to create Tufte-style spark line plots
 
-this is a module (a single function really) that creates a sparkline plot a-la' Tufte.
+this is a pure module (a single .py and a single function really) that creates a sparkline plot a-la' Tufte.
 
 It eats time series in the form of 2d numpy.ndarrays, or dataframes
 
@@ -13,3 +13,18 @@ It will temporarely overwrite your rc.param, but no panic: it will reset them to
 The resulting plot will look something like this:
 
 ![alt text](https://github.com/fedhere/sparklpy/blob/master/sparklines_example.png)
+
+
+The upon calling it, with argument a nd.numpy array (shape = (n_observations, n_timestamps) or a dataframe (all columns must be nuerical values) the function returns a pylab figure object, which you can display (pl.show() ) or save (pl.savefig() ).
+
+install the package "sparkleme" as
+
+`python setup.py install `
+
+or 
+`import sparkleme `
+
+and call as 
+
+`sparkleme.sparkleme(data)`
+
