@@ -1,8 +1,9 @@
+from __future__ import print_function
+__author__ = __fbb__
 #test for sparkleme module
 #makes some fake data and plots it as sparkle lines
 
 
-from __future__ import print_function
 import numpy as np
 from scipy import stats
 import matplotlib.pyplot as pl

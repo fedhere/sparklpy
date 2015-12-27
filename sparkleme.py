@@ -1,3 +1,4 @@
+from __future__ import print_function
 __author__ = __fbb__
 #Federica B. Bianco, NYU
 #github: @fedhere
@@ -6,7 +7,7 @@ __author__ = __fbb__
 #created: December 2015
 #module to plot time series as sparkle lines a' la Tufte.
 
-from __future__ import print_function
+
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as pl
