@@ -22,9 +22,10 @@ The upon calling it, with argument a nd.numpy array (shape = (n_observations, n_
 
 install the package "sparkleme" as
 
-`python setup.py install `
+`python setup.py install `.
 
-or 
+or just save the sparkleme directory somwhere in your python path and call the module sparkleme.
+Either way import as
 
 `import sparkleme `
 
@@ -34,8 +35,9 @@ and call, for example,  as
 
 fig = sparkleme.sparkleme(data)
 
-fig.show()```
+fig.show()
 
 ```
 
+To test that the module works you can use the sparkletest.ipynb Jupyter notebook.
 
