@@ -1,5 +1,5 @@
 from __future__ import print_function
-__author__ = __fbb__
+__author__ = '__fbb__'
 #test for sparkleme module
 #makes some fake data and plots it as sparkle lines
 

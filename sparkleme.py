@@ -1,5 +1,5 @@
 from __future__ import print_function
-__author__ = __fbb__
+__author__ = '__fbb__'
 #Federica B. Bianco, NYU
 #github: @fedhere
 #fedhere@gmail.com
