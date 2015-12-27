@@ -51,7 +51,10 @@ newparams = {
 }
 
 
-def sparklme(data, labels = None, datarange = None, rangecol = None, colors = None, figsize = None, figure = None, ncols = None, alpha=0.3, fontsize=15, minmaxformat = '%.1f', xrangeformat = '%.1f', labeloffset = 0, minmaxoffset = 0):
+def sparklme(data, labels = None, datarange = None, rangecol = None, colors = None, figsize = None, figure = None, ncols = None, alpha=0.3, fontsize=15, minmaxformat = '%.1f', xrangeformat = '%.1f', labeloffset = 0, minmaxoffset = 0, flipy = False):
+    #flipy is designad for astronomical mags:
+    #min is at the top,
+    #max at the bottom
 
     #setting up plotting parameters
     #number of columns in the plotting grid
@@ -136,7 +139,7 @@ def sparklme(data, labels = None, datarange = None, rangecol = None, colors = No
         fig = pl.figure(figsize = figsize)
     
     ax = []
-
+    print (len(data))
     for i, data in enumerate(data):
 
         x2 = 0 if i%2 == 0 else 3
@@ -150,9 +153,9 @@ def sparklme(data, labels = None, datarange = None, rangecol = None, colors = No
         ax[i].axis('off')
         ax[i].set_xlim(-len(data)*0.3, len(data)*1.3)
         try:
-            bl, = ax[i].plot(np.where(data == maxhere)[0], maxhere, 'o')
+            bl, = ax[i].plot(np.where(data == minhere)[0], minhere, 'o')
         except ValueError:
-            bl, = ax[i].plot(np.where(data == maxhere)[0][0], maxhere, 'o')
+            bl, = ax[i].plot(np.where(data == minhere)[0][0], minhere, 'o')
         color_cycle = ax[i]._get_lines.color_cycle
 
         if 'd' in minmaxformat : minhere = int(minhere)
@@ -163,9 +166,9 @@ def sparklme(data, labels = None, datarange = None, rangecol = None, colors = No
                    transform = ax[i].transAxes, ha = 'center',  
                    color=bl.get_color())
         try:
-            bl, = ax[i].plot(np.where(data == minhere)[0], minhere, 'o')
+            bl, = ax[i].plot(np.where(data == maxhere)[0], maxhere, 'o')
         except ValueError:
-            bl, = ax[i].plot(np.where(data == minhere)[0][0], minhere, 'o')
+            bl, = ax[i].plot(np.where(data == maxhere)[0][0], maxhere, 'o')
         ax[i].text(1.3 - minmaxoffset, 0.5, 
                    minmaxformat%(maxhere), fontsize = fontsize, 
                    transform = ax[i].transAxes, color=bl.get_color())
@@ -173,25 +176,31 @@ def sparklme(data, labels = None, datarange = None, rangecol = None, colors = No
                    labels[i], fontsize = fontsize, 
                    transform = ax[i].transAxes)
        
+        if flipy:
+            ax[i].set_ylim(ax[i].get_ylim()[1],
+                           ax[i].get_ylim()[0])
 
         if i<2:
             ax[i].plot((0,ax[i].get_xlim()[1]), 
                     (ax[i].get_ylim()[1], ax[i].get_ylim()[1]), 'k-',)
 
-    ax[0].text (ax[0].get_xlim()[1]*0.5, ax[0].get_ylim()[1]*1.1, 
+    xrangeloc = 1.1
+    if flipy : xrangeloc = 0.9
+    print (ax[0])
+    ax[0].text (ax[0].get_xlim()[1]*0.5, ax[0].get_ylim()[1]*xrangeloc, 
                 '{0:1} - {1:2}'.format(y0, y1), ha = 'center',
                 transform = ax[0].transData, fontsize = fontsize)
-    ax[0].text (1.1 - minmaxoffset, 1.2, 'min', 
+    ax[0].text (1.1 - minmaxoffset, 1.2, 'min',  ha = 'center', 
                 transform = ax[0].transAxes, fontsize = fontsize)
     ax[0].text (1.3 - minmaxoffset, 1.2, 'max', 
                 transform = ax[0].transAxes, fontsize = fontsize)
     xr = '{0:'+xrangeformat+'} - {1:'+xrangeformat+'}'
     xr = xr.replace('%','')
 
-    ax[1].text (ax[1].get_xlim()[1]*0.5, ax[1].get_ylim()[1]*1.1, 
+    ax[1].text (ax[1].get_xlim()[1]*0.5, ax[1].get_ylim()[1]*xrangeloc, 
                 '{0:1} - {1:2}'.format(y0, y1), ha = 'center',
                 transform = ax[1].transData, fontsize = fontsize)
-    ax[1].text (1.1 - minmaxoffset, 1.2, 'min',
+    ax[1].text (1.1 - minmaxoffset, 1.2, 'min', ha = 'center', 
                 transform = ax[1].transAxes, fontsize = fontsize)
     ax[1].text (1.3 - minmaxoffset, 1.2, 'max',
                 transform = ax[1].transAxes, fontsize = fontsize)
@@ -199,3 +208,15 @@ def sparklme(data, labels = None, datarange = None, rangecol = None, colors = No
     pl.rcParams.update(oldparams)
 
     return fig
+
+
+
+def sparkletest():
+    data = np.ones((100,10))
+    data = np.random.randn(10,100) +\
+           np.cos( (data / (np.pi*10*np.random.rand(10))).T * np.arange(100))
+
+    fig = pl.figure(figsize = (10,5))
+
+    fig = sparklme(data, figure=fig)
+    pl.show()
