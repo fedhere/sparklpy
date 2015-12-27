@@ -39,5 +39,9 @@ fig.show()
 
 ```
 
-To test that the module works you can use the sparkletest.ipynb Jupyter notebook.
+To test that the module works run 
+
+`sparkleme.sparkletest()`
+
+or you can use the sparkletest.ipynb Jupyter notebook.
 
