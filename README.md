@@ -34,7 +34,7 @@ and call, for example,  as
 
 fig = sparkleme.sparkleme(data)
 
-fig.show()```
+fig.show()
 
 ```
 
