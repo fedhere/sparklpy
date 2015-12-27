@@ -1,3 +1,11 @@
+__author__ = __fbb__
+#Federica B. Bianco, NYU
+#github: @fedhere
+#fedhere@gmail.com
+#cosmo.nyu.edu/~fb55/
+#created: December 2015
+#module to plot time series as sparkle lines a' la Tufte.
+
 from __future__ import print_function
 import numpy as np
 import pandas as pd
@@ -42,7 +50,7 @@ newparams = {
 }
 
 
-def sparklme(data, labels = None, datarange = None, rangecol = None, colors = None, figsize = None, axis = None, ncols = None, alpha=0.3, fontsize=15, minmaxformat = '%.1f', xrangeformat = '%.1f', labeloffset = 0, minmaxoffset = 0):
+def sparklme(data, labels = None, datarange = None, rangecol = None, colors = None, figsize = None, figure = None, ncols = None, alpha=0.3, fontsize=15, minmaxformat = '%.1f', xrangeformat = '%.1f', labeloffset = 0, minmaxoffset = 0):
 
     #setting up plotting parameters
     #number of columns in the plotting grid
@@ -117,13 +125,15 @@ def sparklme(data, labels = None, datarange = None, rangecol = None, colors = No
     pl.rcParams.update(newparams) 
 
     nrows = int((N + 2)/ncols)
-
-    if figsize :
+    if figure:
+        fig = figure
+        figsize = fig.get_size_inches()
+    elif figsize :
         fig = pl.figure(figsize = figsize)
     else: 
         figsize = (10, nrows)
         fig = pl.figure(figsize = figsize)
-
+    
     ax = []
 
     for i, data in enumerate(data):
@@ -186,6 +196,5 @@ def sparklme(data, labels = None, datarange = None, rangecol = None, colors = No
                 transform = ax[1].transAxes, fontsize = fontsize)
     
     pl.rcParams.update(oldparams)
-
 
     return fig
