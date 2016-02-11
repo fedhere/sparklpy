@@ -35,13 +35,14 @@ kelly_colors_hex = [
     '#F13A13', # Vivid Reddish Orange
     '#232C16', # Dark Olive Green
     ]
+from cycler import cycler
 
 newparams = {
   "lines.linewidth": 2.0,
   "axes.edgecolor": "#aaaaaa",
   "patch.linewidth": 1.0,
   "legend.fancybox": 'false',
-  "axes.color_cycle": kelly_colors_hex,
+  "axes.prop_cycle": (cycler('color',kelly_colors_hex)),
   "axes.facecolor": "#ffffff",
   "axes.labelsize": "large",
   "axes.grid": 'false',
@@ -75,7 +76,7 @@ def sparklme(data, labels = None, datarange = None, rangecol = None, colors = No
     #if it is a DataFrame
     if type(data) ==  pd.core.frame.DataFrame:
         N = len(data.columns)
-	if not labels:
+        if not labels:
             labels = data.columns
         if datarange :
             if (not isinstance(datarange, 
@@ -139,11 +140,9 @@ def sparklme(data, labels = None, datarange = None, rangecol = None, colors = No
         fig = pl.figure(figsize = figsize)
     
     ax = []
-    print (len(data))
     for i, data in enumerate(data):
 
         x2 = 0 if i%2 == 0 else 3
-        
         ax.append(pl.subplot2grid((nrows, ncols * 2 + ncols ), 
                                   ((i/2), x2), colspan = 2))
         minhere = np.nanmin(data)
@@ -156,7 +155,7 @@ def sparklme(data, labels = None, datarange = None, rangecol = None, colors = No
             bl, = ax[i].plot(np.where(data == minhere)[0], minhere, 'o')
         except ValueError:
             bl, = ax[i].plot(np.where(data == minhere)[0][0], minhere, 'o')
-        color_cycle = ax[i]._get_lines.color_cycle
+        color_cycle = next(ax[i]._get_lines.prop_cycler)['color']
 
         if 'd' in minmaxformat : minhere = int(minhere)
         if 'f' in minmaxformat : minhere = float(minhere)
@@ -186,7 +185,6 @@ def sparklme(data, labels = None, datarange = None, rangecol = None, colors = No
 
     xrangeloc = 1.1
     if flipy : xrangeloc = 0.9
-    print (ax[0])
     ax[0].text (ax[0].get_xlim()[1]*0.5, ax[0].get_ylim()[1]*xrangeloc, 
                 '{0:1} - {1:2}'.format(y0, y1), ha = 'center',
                 transform = ax[0].transData, fontsize = fontsize)
