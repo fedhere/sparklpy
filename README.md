@@ -5,6 +5,9 @@
 
 ##module to create Tufte-style spark line plots
 
+(credit: MTA. This code was written almost entirely during NYC subway trips)
+
+
 this is a pure module (a single .py and a single function really) that creates a sparkline plot a-la' Tufte.
 
 It eats time series in the form of 2d numpy.ndarrays, or dataframes
