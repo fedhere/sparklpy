@@ -11,6 +11,9 @@ __author__ = '__fbb__'
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as pl
+import matplotlib as mpl
+from distutils.version import LooseVersion
+
 
 #color blindness safe colors
 kelly_colors_hex = [
@@ -35,9 +38,14 @@ kelly_colors_hex = [
     '#F13A13', # Vivid Reddish Orange
     '#232C16', # Dark Olive Green
     ]
-from cycler import cycler
-ccycler = ['']*len(kelly_colors_hex)*2
 
+axiscycler_key = "axes.color_cycle"
+axiscycler = kelly_colors_hex,
+if LooseVersion(mpl.__version__) >= '1.5.0':
+    from cycler import cycler
+    axiscycler_key =  "axes.prop_cycle"
+    axiscycler = lambda cc : (cycler('color',
+                                     cc))
 #the plots are on every other column of the subplot grid
 #(alternate columns reserved for labels)
 
@@ -45,21 +53,19 @@ ccycler = ['']*len(kelly_colors_hex)*2
 #'prop_cycle' for 'color_cycle'
 
 
-ccycler[0::2]=kelly_colors_hex
-ccycler[1::2]=kelly_colors_hex
+
 newparams = {
-  "lines.linewidth": 2.0,
-  "axes.edgecolor": "#aaaaaa",
-  "patch.linewidth": 1.0,
-  "legend.fancybox": 'false',
-  "axes.prop_cycle": (cycler('color',
-                             ccycler)),
-  "axes.facecolor": "#ffffff",
-  "axes.labelsize": "large",
-  "axes.grid": 'false',
-  "patch.edgecolor": "#555555",
-  "axes.titlesize": "x-large",
-  "svg.embed_char_paths": "path",
+    "lines.linewidth": 2.0,
+    "axes.edgecolor": "#aaaaaa",
+    "patch.linewidth": 1.0,
+    "legend.fancybox": 'false',
+    "axes.facecolor": "#ffffff",
+    "axes.labelsize": "large",
+    "axes.grid": 'false',
+    "patch.edgecolor": "#555555",
+    "axes.titlesize": "x-large",
+    "svg.embed_char_paths": "path",
+    axiscycler_key: axiscycler(kelly_colors_hex)
 }
 
 
@@ -79,8 +85,8 @@ def sparklme(data, labels = None, datarange = None, rangecol = None, colors = No
             colors = [colors]
         else: 
             colors = list(colors)
-        newcolors = colors + ccycler
-        newparams["axes.prop_cycle"]= (cycler('color',newcolors))
+        newcolors = colors + kelly_colors_hex 
+        newparams[axiscycler_key] = axiscycler(newcolors)
 
 
     #setting up data
@@ -122,13 +128,14 @@ def sparklme(data, labels = None, datarange = None, rangecol = None, colors = No
 
     #if it is a np.ndarray
     elif isinstance(data, (list, tuple, np.ndarray)):
-        N = data.shape [1]
+        N = data.shape [0]
+        Ndp = data.shape[1]
 
         if not labels :
             labels= [''] * N
         if not datarange or not isinstance(datarange, 
                                            (list, tuple, np.ndarray)):
-            x0, x1 = 0, N
+            x0, x1 = 0, Ndp
             xrangeformat = '%d'
         elif not len(labels) == N:
             print ("length of lables array is incorrect")
@@ -170,7 +177,6 @@ def sparklme(data, labels = None, datarange = None, rangecol = None, colors = No
             bl, = ax[i].plot(np.where(data == minhere)[0], minhere, 'o')
         except ValueError:
             bl, = ax[i].plot(np.where(data == minhere)[0][0], minhere, 'o')
-        color_cycle = next(ax[i]._get_lines.prop_cycler)['color']
 
         if 'd' in minmaxformat : minhere = int(minhere)
         if 'f' in minmaxformat : minhere = float(minhere)
