@@ -36,13 +36,24 @@ kelly_colors_hex = [
     '#232C16', # Dark Olive Green
     ]
 from cycler import cycler
+ccycler = ['']*len(kelly_colors_hex)*2
 
+#the plots are on every other column of the subplot grid
+#(alternate columns reserved for labels)
+
+#the color cycle gets screwes since upgrade to MPL 1.5 and subbing
+#'prop_cycle' for 'color_cycle'
+
+
+ccycler[0::2]=kelly_colors_hex
+ccycler[1::2]=kelly_colors_hex
 newparams = {
   "lines.linewidth": 2.0,
   "axes.edgecolor": "#aaaaaa",
   "patch.linewidth": 1.0,
   "legend.fancybox": 'false',
-  "axes.prop_cycle": (cycler('color',kelly_colors_hex)),
+  "axes.prop_cycle": (cycler('color',
+                             ccycler)),
   "axes.facecolor": "#ffffff",
   "axes.labelsize": "large",
   "axes.grid": 'false',
@@ -68,8 +79,8 @@ def sparklme(data, labels = None, datarange = None, rangecol = None, colors = No
             colors = [colors]
         else: 
             colors = list(colors)
-        newcolors = colors + kelly_colors_hex
-        newparams["axes.color_cycle"]= newcolors
+        newcolors = colors + ccycler
+        newparams["axes.prop_cycle"]= (cycler('color',newcolors))
 
 
     #setting up data
@@ -83,43 +94,47 @@ def sparklme(data, labels = None, datarange = None, rangecol = None, colors = No
                                (list, tuple, np.ndarray)) 
                 or not np.array(datarange).shape == (2,)):
                 print ("datarange incorrect")
-                y0, y1 = '', ''
+                x0, x1 = '', ''
             else:
-                y0, y1 = datarange
+                x0, x1 = datarange
             
         elif rangecol:
             N -= 1
             if rangecol in data.columns:
-                y0, y1 = data[rangecol].values.min(), \
+                print (data[rangecol])
+                x0, x1 = data[rangecol].values.min(), \
                        data[rangecol].values.max()
             else:
                 print ("rangecol incorrect")
-                y0, y1 = '', ''
+                x0, x1 = '', ''
             data.drop(rangecol, 1, inplace=True)
 
         else:
-            y0, y1 = '', ''    
+            ldf = float(len(data))
+            x0, x1 = '0', '%d'%ldf
+            xrangeformat = '%d'
         if 'd' in xrangeformat: 
-            y0, y1 = int(y0), int(y1)
+            x0, x1 = int(x0), int(x1)
         if 'f' in xrangeformat: 
-            y0, y1 = float(y0), float(y1)
-        
+            x0, x1 = float(x0), float(x1)
+            
         data =data.values.T
 
     #if it is a np.ndarray
     elif isinstance(data, (list, tuple, np.ndarray)):
-        N = len(data) 
+        N = data.shape [1]
 
         if not labels :
             labels= [''] * N
         if not datarange or not isinstance(datarange, 
                                            (list, tuple, np.ndarray)):
-            y0, y1 = 0, N
+            x0, x1 = 0, N
+            xrangeformat = '%d'
         elif not len(labels) == N:
             print ("length of lables array is incorrect")
             labels= [''] * N
         else:
-            y0, y1 = datarange
+            x0, x1 = datarange
     else:
         print ("data type not understood")
         return -1
@@ -185,18 +200,19 @@ def sparklme(data, labels = None, datarange = None, rangecol = None, colors = No
 
     xrangeloc = 1.1
     if flipy : xrangeloc = 0.9
+    xr = '{0:'+xrangeformat+'} - {1:'+xrangeformat+'}'
+    xr = xr.replace('%','')
     ax[0].text (ax[0].get_xlim()[1]*0.5, ax[0].get_ylim()[1]*xrangeloc, 
-                '{0:1} - {1:2}'.format(y0, y1), ha = 'center',
+                xr.format(x0, x1), ha = 'center',
                 transform = ax[0].transData, fontsize = fontsize)
     ax[0].text (1.1 - minmaxoffset, 1.2, 'min',  ha = 'center', 
                 transform = ax[0].transAxes, fontsize = fontsize)
     ax[0].text (1.3 - minmaxoffset, 1.2, 'max', 
                 transform = ax[0].transAxes, fontsize = fontsize)
-    xr = '{0:'+xrangeformat+'} - {1:'+xrangeformat+'}'
-    xr = xr.replace('%','')
+
 
     ax[1].text (ax[1].get_xlim()[1]*0.5, ax[1].get_ylim()[1]*xrangeloc, 
-                '{0:1} - {1:2}'.format(y0, y1), ha = 'center',
+                xr.format(x0, x1), ha = 'center',
                 transform = ax[1].transData, fontsize = fontsize)
     ax[1].text (1.1 - minmaxoffset, 1.2, 'min', ha = 'center', 
                 transform = ax[1].transAxes, fontsize = fontsize)
