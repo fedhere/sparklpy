@@ -40,7 +40,7 @@ kelly_colors_hex = [
     ]
 
 axiscycler_key = "axes.color_cycle"
-axiscycler = kelly_colors_hex,
+axiscycler = lambda cc : cc
 if LooseVersion(mpl.__version__) >= '1.5.0':
     from cycler import cycler
     axiscycler_key =  "axes.prop_cycle"
