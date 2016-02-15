@@ -107,7 +107,6 @@ def sparklme(data, labels = None, datarange = None, rangecol = None, colors = No
         elif rangecol:
             N -= 1
             if rangecol in data.columns:
-                print (data[rangecol])
                 x0, x1 = data[rangecol].values.min(), \
                        data[rangecol].values.max()
             else:
@@ -130,18 +129,32 @@ def sparklme(data, labels = None, datarange = None, rangecol = None, colors = No
     elif isinstance(data, (list, tuple, np.ndarray)):
         N = data.shape [0]
         Ndp = data.shape[1]
-
+        
         if not labels :
             labels= [''] * N
+
         if not datarange or not isinstance(datarange, 
                                            (list, tuple, np.ndarray)):
-            x0, x1 = 0, Ndp
-            xrangeformat = '%d'
-        elif not len(labels) == N:
-            print ("length of lables array is incorrect")
-            labels= [''] * N
+            if not (rangecol is None) and isinstance(rangecol, int):
+                x0, x1 = data[rangecol].min(), data[rangecol].max()
+                mask = np.ones(data.shape[0], dtype=bool)
+                mask[rangecol] = False
+                data = data[mask]
+                labels = np.array(labels)[mask]
+                N = N-1
+
+            else:
+                x0, x1 = 0, Ndp
+                xrangeformat = '%d'
         else:
             x0, x1 = datarange
+
+
+        
+
+        if not len(labels) == N:
+            print ("length of lables array is incorrect")
+            labels= [''] * N
     else:
         print ("data type not understood")
         return -1
@@ -152,6 +165,8 @@ def sparklme(data, labels = None, datarange = None, rangecol = None, colors = No
     pl.rcParams.update(newparams) 
 
     nrows = int((N + 2)/ncols)
+    print ("number of rows:", nrows)
+
     if figure:
         fig = figure
         figsize = fig.get_size_inches()
@@ -160,13 +175,13 @@ def sparklme(data, labels = None, datarange = None, rangecol = None, colors = No
     else: 
         figsize = (10, nrows)
         fig = pl.figure(figsize = figsize)
-    
+    print ("figure size: ", fig.get_size_inches(), "in")
     ax = []
     for i, data in enumerate(data):
-
-        x2 = 0 if i%2 == 0 else 3
+        x2 = 0 if i%ncols == 0 else (i%ncols)*3
+        #print (nrows, ncols * 2 + ncols, ((i/ncols), x2), i%ncols)
         ax.append(pl.subplot2grid((nrows, ncols * 2 + ncols ), 
-                                  ((i/2), x2), colspan = 2))
+                                  ((i/ncols), x2), colspan = 2))
         minhere = np.nanmin(data)
         maxhere = np.nanmax(data)
 
@@ -208,15 +223,17 @@ def sparklme(data, labels = None, datarange = None, rangecol = None, colors = No
     if flipy : xrangeloc = 0.9
     xr = '{0:'+xrangeformat+'} - {1:'+xrangeformat+'}'
     xr = xr.replace('%','')
-    ax[0].text (ax[0].get_xlim()[1]*0.5, ax[0].get_ylim()[1]*xrangeloc, 
-                xr.format(x0, x1), ha = 'center',
-                transform = ax[0].transData, fontsize = fontsize)
-    ax[0].text (1.1 - minmaxoffset, 1.2, 'min',  ha = 'center', 
-                transform = ax[0].transAxes, fontsize = fontsize)
-    ax[0].text (1.3 - minmaxoffset, 1.2, 'max', 
-                transform = ax[0].transAxes, fontsize = fontsize)
 
+    for axi in ax[:ncols]:
+        axi.text (axi.get_xlim()[1]*0.5, axi.get_ylim()[1]*xrangeloc, 
+                    xr.format(x0, x1), ha = 'center',
+                    transform = axi.transData, fontsize = fontsize)
+        axi.text (1.1 - minmaxoffset, 1.2, 'min',  ha = 'center', 
+                    transform = axi.transAxes, fontsize = fontsize)
+        axi.text (1.3 - minmaxoffset, 1.2, 'max', 
+                    transform = axi.transAxes, fontsize = fontsize)
 
+    '''
     ax[1].text (ax[1].get_xlim()[1]*0.5, ax[1].get_ylim()[1]*xrangeloc, 
                 xr.format(x0, x1), ha = 'center',
                 transform = ax[1].transData, fontsize = fontsize)
@@ -224,7 +241,7 @@ def sparklme(data, labels = None, datarange = None, rangecol = None, colors = No
                 transform = ax[1].transAxes, fontsize = fontsize)
     ax[1].text (1.3 - minmaxoffset, 1.2, 'max',
                 transform = ax[1].transAxes, fontsize = fontsize)
-    
+    '''
     pl.rcParams.update(oldparams)
 
     return fig
@@ -235,6 +252,7 @@ def sparkletest():
     data = np.ones((100,10))
     data = np.random.randn(10,100) +\
            np.cos( (data / (np.pi*10*np.random.rand(10))).T * np.arange(100))
+
 
     fig = pl.figure(figsize = (10,5))
 
