@@ -5,7 +5,7 @@
 
 ##module to create Tufte-style spark line plots
 
-(acknowledge: the author thaks MTA for their service: this code was written almost entirely during NYC subway trips)
+(acknowledgement: the author thaks MTA for their service: this code was written almost entirely during NYC subway trips)
 
 
 this is a pure module (a single .py and a single function really) that creates a sparkline plot a-la' Tufte.
