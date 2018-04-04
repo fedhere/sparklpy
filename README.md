@@ -3,7 +3,7 @@
 [![DOI](https://zenodo.org/badge/10115/fedhere/sparklpy.svg)](https://zenodo.org/badge/latestdoi/10115/fedhere/sparklpy)
 [![Code Health](https://landscape.io/github/fedhere/sparklpy/master/landscape.svg?style=flat)](https://landscape.io/github/fedhere/sparklpy/master)
 
-##module to create Tufte-style spark line plots
+## module to create Tufte-style spark line plots for time series, including astronomical ones (in magnitude!)
 
 (acknowledgement - the author thaks MTA for their service: this code was written almost entirely during NYC subway trips)
 
